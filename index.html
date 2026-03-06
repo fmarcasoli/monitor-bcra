@@ -311,9 +311,24 @@ const HIST = {"bm":{"daily":[{"f":"2023-01-01","bm":5203752.0},{"f":"2023-01-02"
 // 40=TPM, 29=UVA, 30=CER, 19=TM20
 // ═══════════════════════════════════════════════
 const API = 'https://sweet-sound-e6c1.feli-marcasoli.workers.dev/estadisticas/v4.0';
-// IDs verificados en API v4 del BCRA
-// Fuente: /estadisticas/v4.0/Monetarias?Limit=5
-const VARS = {res:1, tc_min:4, tc_ref:5, badlar:7, tm20:8, tamar:9, baibar:27, tpm:40, bm:15, uva:29, cer:30};
+// IDs verificados en API v4 del BCRA (Limit=200)
+const VARS = {
+  res:1,       // Reservas internacionales (M USD)
+  tc_min:4,    // TC minorista promedio vendedor
+  tc_ref:5,    // TC mayorista referencia
+  badlar:7,    // BADLAR bancos privados TNA
+  tm20:8,      // TM20 bancos privados TNA
+  baibar:11,   // BAIBAR TNA (no 27 que es inflación IPC mensual)
+  tpm:160,     // Tasa política monetaria TNA
+  bm:15,       // Base monetaria (M ARS)
+  uva:31,      // UVA ($1811)
+  cer:30,      // CER
+  tamar:44,    // TAMAR bancos privados TNA
+  pf:12,       // PF 30 días TNA
+  personales:14, // Tasa préstamos personales
+  inflacion_m:27, // Inflación mensual IPC
+  inflacion_ia:28, // Inflación interanual IPC
+};
 
 // Cache de datos de API
 const apiData = {};
@@ -373,16 +388,16 @@ async function loadAPI(){
 
     // Fetch series históricas en paralelo (últimos 2 años)
     const [resD, tcMinD, tcRefD, badlarD, tm20D, bmD, baibarD, tpmD, uvaD, cerD] = await Promise.all([
-      fetchVar(1,  hace2y, hoy),
-      fetchVar(4,  hace2y, hoy),
-      fetchVar(5,  hace2y, hoy),
-      fetchVar(7,  hace2y, hoy),
-      fetchVar(8,  hace2y, hoy),
-      fetchVar(15, hace2y, hoy),
-      fetchVar(27, hace2y, hoy),
-      fetchVar(40, hace2y, hoy),
-      fetchVar(29, hace2y, hoy),
-      fetchVar(30, hace2y, hoy),
+      fetchVar(1,   hace2y, hoy),  // Reservas
+      fetchVar(4,   hace2y, hoy),  // TC minorista
+      fetchVar(5,   hace2y, hoy),  // TC mayorista
+      fetchVar(7,   hace2y, hoy),  // BADLAR priv
+      fetchVar(8,   hace2y, hoy),  // TM20 priv
+      fetchVar(15,  hace2y, hoy),  // Base monetaria
+      fetchVar(11,  hace2y, hoy),  // BAIBAR
+      fetchVar(160, hace2y, hoy),  // TPM
+      fetchVar(31,  hace2y, hoy),  // UVA
+      fetchVar(30,  hace2y, hoy),  // CER
     ]);
 
     apiData.res    = resD;
@@ -395,8 +410,7 @@ async function loadAPI(){
     apiData.tpm    = tpmD;
     apiData.uva    = uvaD;
     apiData.cer    = cerD;
-    // tamar fallback to latest
-    apiData.tamar  = apiData.latest[9] ? [{fecha: apiData.latest[9].fecha, valor: apiData.latest[9].valor}] : [];
+    apiData.tamar  = apiData.latest[44] ? [{fecha: apiData.latest[44].fecha, valor: apiData.latest[44].valor}] : [];
 
     apiLoaded = true;
     renderAPI();
@@ -479,12 +493,12 @@ function renderAPI(){
   }
 
   // Tasas — usar latestMap para valores más actuales
-  const tpmV2    = L[40]?.valor ?? last(apiData.tpm)?.valor;
-  const baibarV2 = L[27]?.valor ?? last(apiData.baibar)?.valor;
+  const tpmV2    = L[160]?.valor ?? last(apiData.tpm)?.valor;
+  const baibarV2 = L[11]?.valor ?? last(apiData.baibar)?.valor;
   const badlarV2 = L[7]?.valor  ?? last(apiData.badlar)?.valor;
-  const tamarV2  = L[9]?.valor  ?? last(apiData.tamar)?.valor;
+  const tamarV2  = L[44]?.valor  ?? last(apiData.tamar)?.valor;
   const tm20V2   = L[8]?.valor  ?? last(apiData.tm20)?.valor;
-  const uvaV2    = L[29]?.valor ?? last(apiData.uva)?.valor;
+  const uvaV2    = L[31]?.valor ?? last(apiData.uva)?.valor;
   const cerV2    = L[30]?.valor ?? last(apiData.cer)?.valor;
   if(tpmV2) set('k_tpm', fmtN(tpmV2,2)+'%');
   if(baibarV2){
@@ -523,13 +537,13 @@ function renderResumenKPIs(){
   const tcMinV  = L[4]?.valor  ?? last(apiData.tc_min)?.valor;
   const resV    = L[1]?.valor  ?? res?.valor;
   const bmV     = L[15]?.valor ?? bm?.valor;
-  const baibarV = L[27]?.valor ?? baibar?.valor;
+  const baibarV = L[11]?.valor ?? baibar?.valor;
   const badlarV = L[7]?.valor  ?? badlar?.valor;
   const tm20V   = L[8]?.valor  ?? tm20?.valor;
-  const tpmV    = L[40]?.valor ?? tpm?.valor;
-  const uvaV    = L[29]?.valor ?? uva?.valor;
+  const tpmV    = L[160]?.valor ?? tpm?.valor;
+  const uvaV    = L[31]?.valor ?? uva?.valor;
   const cerV    = L[30]?.valor ?? cer?.valor;
-  const tamarV  = L[9]?.valor;
+  const tamarV  = L[44]?.valor;
 
   // Calcular variaciones usando series históricas
   const tcRef30 = valAt(apiData.tc_ref,30);
@@ -559,6 +573,7 @@ function renderResumenKPIs(){
       <div class="kv">$${fmtN(uvaV,2)}</div>
       <div class="ks">CER: ${fmtN(cerV,2)}</div></div>
     ${tamarV?`<div class="k g"><div class="kl">TAMAR Priv.</div><div class="kv">${fmtN(tamarV,2)}%</div></div>`:''}
+    ${L[27]?.valor!=null?`<div class="k r"><div class="kl">Inflación mensual</div><div class="kv">${fmtN(L[27].valor,1)}%</div><div class="ks dn">i.a.: ${fmtN(L[28]?.valor,1)}%</div></div>`:''}
   `;
 }
 
