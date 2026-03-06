@@ -70,6 +70,13 @@ tr:hover td{background:var(--bg3);}
 .tag.r{background:rgba(239,68,68,.15);color:var(--red);}
 .tag.b{background:rgba(59,130,246,.15);color:var(--accent);}
 .err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:12px 16px;font-size:12px;color:#fca5a5;margin-bottom:12px;}
+.drng{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.drng input[type=date]{background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;}
+.drng input[type=date]:focus{outline:none;border-color:var(--accent);}
+.drng label{font-size:11px;color:var(--muted);}
+.drng .sep{color:var(--muted);font-size:11px;}
+.drng .apply{background:var(--accent);border:none;color:#fff;border-radius:5px;padding:3px 10px;font-size:11px;cursor:pointer;}
+.drng .apply:hover{opacity:.85;}
 footer{text-align:center;padding:18px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);margin-top:20px;}
 </style>
 </head>
@@ -128,11 +135,15 @@ footer{text-align:center;padding:18px;font-size:11px;color:var(--muted);border-t
     <div class="k"><div class="kl">Hace 30 días</div><div class="kv loading" id="k_tc_30d"><span class="spin">⟳</span></div></div>
     <div class="k"><div class="kl">Hace 1 año</div><div class="kv loading" id="k_tc_1y"><span class="spin">⟳</span></div><div class="ks dn" id="k_tc_ia_sub"></div></div>
   </div>
-  <div class="rb" id="rb_tc" style="margin-top:14px;">
+  <div class="drng" style="margin-top:14px;">
     <button class="r a" onclick="SR('tc',1,this)">1a</button>
     <button class="r" onclick="SR('tc',2,this)">2a</button>
     <button class="r" onclick="SR('tc',5,this)">5a</button>
     <button class="r" onclick="SR('tc',0,this)">Todo</button>
+    <span class="sep">|</span>
+    <label>Desde</label><input type="date" id="tc_desde">
+    <label>Hasta</label><input type="date" id="tc_hasta">
+    <button class="apply" onclick="SRcustom('tc','tc_desde','tc_hasta')">Aplicar</button>
   </div>
   <div class="cg w1"><div class="cc"><canvas id="c_tc" style="max-height:290px;"></canvas></div></div>
   <div class="sec">Reservas Internacionales <span class="badge live">🟢 API en vivo</span></div>
@@ -142,11 +153,15 @@ footer{text-align:center;padding:18px;font-size:11px;color:var(--muted);border-t
     <div class="k p"><div class="kl">Hace 30 días</div><div class="kv loading" id="k_res_30d"><span class="spin">⟳</span></div></div>
     <div class="k p"><div class="kl">Hace 1 año</div><div class="kv loading" id="k_res_1y"><span class="spin">⟳</span></div></div>
   </div>
-  <div class="rb" id="rb_res" style="margin-top:14px;">
+  <div class="drng" style="margin-top:14px;">
     <button class="r a" onclick="SR('res',1,this)">1a</button>
     <button class="r" onclick="SR('res',2,this)">2a</button>
     <button class="r" onclick="SR('res',5,this)">5a</button>
     <button class="r" onclick="SR('res',0,this)">Todo</button>
+    <span class="sep">|</span>
+    <label>Desde</label><input type="date" id="res_desde">
+    <label>Hasta</label><input type="date" id="res_hasta">
+    <button class="apply" onclick="SRcustom('res','res_desde','res_hasta')">Aplicar</button>
   </div>
   <div class="cg w1"><div class="cc"><canvas id="c_res" style="max-height:290px;"></canvas></div></div>
 </div>
@@ -160,11 +175,15 @@ footer{text-align:center;padding:18px;font-size:11px;color:var(--muted);border-t
     <div class="k g"><div class="kl">Var. interanual</div><div class="kv loading" id="k_bm_ia"><span class="spin">⟳</span></div></div>
     <div class="k"><div class="kl">Hace 1 año</div><div class="kv loading" id="k_bm_1y"><span class="spin">⟳</span></div></div>
   </div>
-  <div class="rb" id="rb_bm" style="margin-top:14px;">
+  <div class="drng" style="margin-top:14px;">
     <button class="r a" onclick="SR('bm',1,this)">1a</button>
     <button class="r" onclick="SR('bm',2,this)">2a</button>
     <button class="r" onclick="SR('bm',5,this)">5a</button>
     <button class="r" onclick="SR('bm',0,this)">Todo</button>
+    <span class="sep">|</span>
+    <label>Desde</label><input type="date" id="bm_desde">
+    <label>Hasta</label><input type="date" id="bm_hasta">
+    <button class="apply" onclick="SRcustom('bm','bm_desde','bm_hasta')">Aplicar</button>
   </div>
   <div class="cg w1"><div class="cc"><canvas id="c_bm" style="max-height:290px;"></canvas></div></div>
   <div class="sec">Factores de variación <span class="badge manual">📁 Último infomondia</span></div>
@@ -196,11 +215,15 @@ footer{text-align:center;padding:18px;font-size:11px;color:var(--muted);border-t
     <div class="k"><div class="kl">UVA</div><div class="kv loading" id="k_uva"><span class="spin">⟳</span></div></div>
     <div class="k"><div class="kl">CER</div><div class="kv loading" id="k_cer"><span class="spin">⟳</span></div></div>
   </div>
-  <div class="rb" id="rb_tas" style="margin-top:14px;">
+  <div class="drng" style="margin-top:14px;">
     <button class="r a" onclick="SR('tas',1,this)">1a</button>
     <button class="r" onclick="SR('tas',2,this)">2a</button>
     <button class="r" onclick="SR('tas',5,this)">5a</button>
     <button class="r" onclick="SR('tas',0,this)">Todo</button>
+    <span class="sep">|</span>
+    <label>Desde</label><input type="date" id="tas_desde">
+    <label>Hasta</label><input type="date" id="tas_hasta">
+    <button class="apply" onclick="SRcustom('tas','tas_desde','tas_hasta')">Aplicar</button>
   </div>
   <div class="cg">
     <div class="cc"><div class="ct">Tasas pasivas % TNA <span class="badge live" style="font-size:9px;">API</span></div><canvas id="c_tas_pas"></canvas></div>
@@ -264,14 +287,14 @@ footer{text-align:center;padding:18px;font-size:11px;color:var(--muted);border-t
   <div class="cg w1">
     <div class="cc">
       <div class="ct">Reservas Internacionales (M USD)</div>
-      <div class="rb"><button class="r a" onclick="SR('res_h',5,this)">5a</button><button class="r" onclick="SR('res_h',10,this)">10a</button><button class="r" onclick="SR('res_h',0,this)">Todo</button></div>
+      <div class="drng"><button class="r a" onclick="SR('res_h',5,this)">5a</button><button class="r" onclick="SR('res_h',10,this)">10a</button><button class="r" onclick="SR('res_h',0,this)">Todo</button><span class="sep">|</span><label>Desde</label><input type="date" id="resh_desde"><label>Hasta</label><input type="date" id="resh_hasta"><button class="apply" onclick="SRcustom('res_h','resh_desde','resh_hasta')">Aplicar</button></div>
       <canvas id="c_res_h" style="max-height:255px;"></canvas>
     </div>
   </div>
   <div class="cg w1" style="margin-top:14px;">
     <div class="cc">
       <div class="ct">Tipo de Cambio ($/USD)</div>
-      <div class="rb"><button class="r a" onclick="SR('tc_h',5,this)">5a</button><button class="r" onclick="SR('tc_h',10,this)">10a</button><button class="r" onclick="SR('tc_h',0,this)">Todo</button></div>
+      <div class="drng"><button class="r a" onclick="SR('tc_h',5,this)">5a</button><button class="r" onclick="SR('tc_h',10,this)">10a</button><button class="r" onclick="SR('tc_h',0,this)">Todo</button><span class="sep">|</span><label>Desde</label><input type="date" id="tch_desde"><label>Hasta</label><input type="date" id="tch_hasta"><button class="apply" onclick="SRcustom('tc_h','tch_desde','tch_hasta')">Aplicar</button></div>
       <canvas id="c_tc_h" style="max-height:255px;"></canvas>
     </div>
   </div>
@@ -591,6 +614,31 @@ Chart.defaults.color='#94a3b8';
 Chart.defaults.borderColor='#334155';
 const CH={};
 
+// Plugin crosshair global
+const crosshairPlugin = {
+  id:'crosshair',
+  afterDraw(chart){
+    if(!chart._crossX) return;
+    const {ctx,chartArea:{top,bottom}}=chart;
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(chart._crossX,top);
+    ctx.lineTo(chart._crossX,bottom);
+    ctx.strokeStyle='rgba(148,163,184,0.4)';
+    ctx.lineWidth=1;
+    ctx.setLineDash([4,4]);
+    ctx.stroke();
+    ctx.restore();
+  },
+  afterEvent(chart,args){
+    const e=args.event;
+    if(e.type==='mousemove'){chart._crossX=e.x;}
+    else if(e.type==='mouseout'){chart._crossX=null;}
+    chart.draw();
+  }
+};
+Chart.register(crosshairPlugin);
+
 function mk(id,cfg){
   const el=document.getElementById(id);
   if(!el)return;
@@ -604,7 +652,30 @@ function ld(label,data,col,fill=false){
 function lc(id,labels,ds,yf){
   return mk(id,{type:'line',data:{labels,datasets:ds},options:{
     animation:{duration:250},
-    plugins:{legend:{labels:{boxWidth:10,font:{size:10}}}},
+    interaction:{mode:'index',intersect:false},
+    plugins:{
+      legend:{labels:{boxWidth:10,font:{size:10}}},
+      tooltip:{
+        mode:'index',
+        intersect:false,
+        backgroundColor:'rgba(15,23,42,0.95)',
+        titleColor:'#94a3b8',
+        bodyColor:'#f1f5f9',
+        borderColor:'#334155',
+        borderWidth:1,
+        padding:10,
+        titleFont:{size:11},
+        bodyFont:{size:12,weight:'bold'},
+        callbacks:{
+          label: ctx => {
+            const v = ctx.parsed.y;
+            if(v==null) return null;
+            const raw = yf ? yf(v) : v;
+            return ` ${ctx.dataset.label}: ${raw}`;
+          }
+        }
+      }
+    },
     scales:{y:{ticks:{callback:yf||(v=>v)}}}
   }});
 }
@@ -648,36 +719,39 @@ function buildResumenCharts(){
   lc('c_bm_r', bm90.map(d=>d.fecha.slice(0,7)), [ld('BM',bm90.map(d=>d.valor/1e6),'#38bdf8',true)], v=>'$'+v.toFixed(0)+'bn');
 }
 
-function buildTC(y){
-  const c = cutoff(y);
-  // Combinar HIST + API
+function buildTC(y, desde, hasta){
+  const c = desde || cutoff(y);
+  const h = hasta || dateStr(0);
   const merged = mergeWithHist(apiData.tc_ref, HIST.res.monthly.filter(d=>d.f<'2024-01-01'), 'valor', 'tc');
-  const data = merged.filter(d=>d.f>=c);
+  const data = merged.filter(d=>d.f>=c && d.f<=h);
   lc('c_tc', data.map(x=>x.f.slice(0,7)), [ld('TC $/USD',data.map(x=>x.v),'#3b82f6',true)], v=>'$'+v.toLocaleString('es-AR',{maximumFractionDigits:0}));
 }
-function buildRes(y){
-  const c = cutoff(y);
+function buildRes(y, desde, hasta){
+  const c = desde || cutoff(y);
+  const h = hasta || dateStr(0);
   const merged = mergeWithHist(apiData.res, HIST.res.monthly.filter(d=>d.f<'2024-01-01'), 'valor', 'res');
-  const data = merged.filter(d=>d.f>=c);
+  const data = merged.filter(d=>d.f>=c && d.f<=h);
   lc('c_res', data.map(x=>x.f.slice(0,7)), [ld('Reservas M USD',data.map(x=>x.v),'#a78bfa',true)], v=>'USD '+(v/1000).toFixed(1)+'bn');
 }
-function buildBM(y){
-  const c = cutoff(y);
+function buildBM(y, desde, hasta){
+  const c = desde || cutoff(y);
+  const h = hasta || dateStr(0);
   const histBM = HIST.bm.monthly.filter(d=>d.f<'2024-01-01').map(d=>({f:d.f,v:d.bm/1e6}));
   const apiBM = (apiData.bm||[]).map(d=>({f:d.fecha,v:d.valor/1e6}));
   const combined = {};
   histBM.forEach(d=>combined[d.f.slice(0,7)]=d.v);
   apiBM.forEach(d=>combined[d.f.slice(0,7)]=d.v);
-  const data = Object.keys(combined).sort().filter(f=>f>=c).map(f=>({f,v:combined[f]}));
+  const data = Object.keys(combined).sort().filter(f=>f>=c && f<=h).map(f=>({f,v:combined[f]}));
   lc('c_bm', data.map(x=>x.f), [ld('Base Monetaria',data.map(x=>x.v),'#38bdf8',true)], v=>'$'+v.toFixed(0)+'bn');
 }
-function buildTAS(y){
-  const c = cutoff(y);
-  const bad = (apiData.badlar||[]).filter(d=>d.fecha>=c);
-  const tm  = (apiData.tm20||[]).filter(d=>d.fecha>=c);
+function buildTAS(y, desde, hasta){
+  const c = desde || cutoff(y);
+  const h = hasta || dateStr(0);
+  const bad = (apiData.badlar||[]).filter(d=>d.fecha>=c && d.fecha<=h);
+  const tm  = (apiData.tm20||[]).filter(d=>d.fecha>=c && d.fecha<=h);
   const tmMap={}; tm.forEach(d=>tmMap[d.fecha]=d.valor);
   // Add hist for older data
-  const histTas = HIST.tasas.monthly.filter(d=>d.f<(apiData.badlar?.[0]?.fecha||'2024-01-01') && d.f>=c);
+  const histTas = HIST.tasas.monthly.filter(d=>d.f<(apiData.badlar?.[0]?.fecha||'2024-01-01') && d.f>=c && d.f<=h);
   const labels = [...histTas.map(d=>d.f.slice(0,7)), ...bad.map(d=>d.fecha.slice(0,7))];
   const badlarV = [...histTas.map(d=>d.badlar), ...bad.map(d=>d.valor)];
   const tm20V = [...histTas.map(d=>d.tm20), ...bad.map(d=>tmMap[d.fecha]||null)];
@@ -687,8 +761,8 @@ function buildTAS(y){
     ld('BADLAR Priv.', badlarV, '#10b981'),
     ld('TM20 Priv.', tm20V, '#8b5cf6'),
   ], v=>v+'%');
-  const tpm = (apiData.tpm||[]).filter(d=>d.fecha>=c);
-  const histTPM = HIST.tpm.filter(d=>d.f<(apiData.tpm?.[0]?.fecha||'2024-01-01') && d.f>=c);
+  const tpm = (apiData.tpm||[]).filter(d=>d.fecha>=c && d.fecha<=h);
+  const histTPM = HIST.tpm.filter(d=>d.f<(apiData.tpm?.[0]?.fecha||'2024-01-01') && d.f>=c && d.f<=h);
   lc('c_tpm_ch',
     [...histTPM.map(d=>d.f.slice(0,7)), ...tpm.map(d=>d.fecha.slice(0,7))],
     [ld('TPM',[...histTPM.map(d=>d.tpm),...tpm.map(d=>d.valor)],'#fbbf24',true)],
@@ -700,15 +774,16 @@ function buildCRED(){
   const dep=HIST.dep_ia.monthly;
   lc('c_dep_ia',dep.map(d=>d.f.slice(0,7)),[ld('Total',dep.map(d=>d.total),'#a78bfa'),ld('PF',dep.map(d=>d.pf),'#f59e0b'),ld('Vista',dep.map(d=>d.vista),'#10b981')],v=>v+'%');
 }
-function buildHIST(key,y){
-  const c=cutoff(y);
+function buildHIST(key,y,desde,hasta){
+  const c=desde||cutoff(y);
+  const h=hasta||dateStr(0);
   if(key==='res_h'){
     const merged=mergeWithHist(apiData.res, HIST.res.monthly,'valor','res');
-    const d=merged.filter(x=>x.f>=c);
+    const d=merged.filter(x=>x.f>=c&&x.f<=h);
     lc('c_res_h',d.map(x=>x.f.slice(0,7)),[ld('Reservas',d.map(x=>x.v),'#a78bfa',true)],v=>'USD '+(v/1000).toFixed(0)+'bn');
   } else if(key==='tc_h'){
     const merged=mergeWithHist(apiData.tc_ref, HIST.res.monthly,'valor','tc');
-    const d=merged.filter(x=>x.f>=c);
+    const d=merged.filter(x=>x.f>=c&&x.f<=h);
     lc('c_tc_h',d.map(x=>x.f.slice(0,7)),[ld('TC',d.map(x=>x.v),'#3b82f6',true)],v=>'$'+v.toLocaleString('es-AR',{maximumFractionDigits:0}));
   } else if(key==='tpm_h'){
     const hist=HIST.tpm.filter(d=>d.f>=c);
@@ -716,7 +791,7 @@ function buildHIST(key,y){
     const combined={};
     hist.forEach(d=>combined[d.f.slice(0,7)]=d.tpm);
     api.forEach(d=>combined[d.fecha.slice(0,7)]=d.valor);
-    const data=Object.keys(combined).sort().map(f=>({f,v:combined[f]}));
+    const data=Object.keys(combined).sort().filter(f=>f>=c&&f<=h).map(f=>({f,v:combined[f]}));
     lc('c_tpm_h',data.map(x=>x.f),[ld('TPM',data.map(x=>x.v),'#fbbf24',true)],v=>v+'%');
   } else if(key==='bdl_h'){
     const hist=HIST.tasas.monthly.filter(d=>d.f>=c);
@@ -724,7 +799,7 @@ function buildHIST(key,y){
     const combined={};
     hist.forEach(d=>combined[d.f.slice(0,7)]=d.badlar);
     api.forEach(d=>combined[d.fecha.slice(0,7)]=d.valor);
-    const data=Object.keys(combined).sort().map(f=>({f,v:combined[f]}));
+    const data=Object.keys(combined).sort().filter(f=>f>=c&&f<=h).map(f=>({f,v:combined[f]}));
     lc('c_bdl_h',data.map(x=>x.f),[ld('BADLAR Priv.',data.map(x=>x.v),'#10b981',true)],v=>v+'%');
   } else if(key==='bm_h'){
     const hist=HIST.bm.monthly.filter(d=>d.f>=c).map(d=>({f:d.f.slice(0,7),v:d.bm/1e6}));
@@ -732,18 +807,32 @@ function buildHIST(key,y){
     const combined={};
     hist.forEach(d=>combined[d.f]=d.v);
     api.forEach(d=>combined[d.f]=d.v);
-    const data=Object.keys(combined).sort().map(f=>({f,v:combined[f]}));
+    const data=Object.keys(combined).sort().filter(f=>f>=c&&f<=h).map(f=>({f,v:combined[f]}));
     lc('c_bm_h',data.map(x=>x.f),[ld('BM',data.map(x=>x.v),'#38bdf8',true)],v=>'$'+v.toFixed(0)+'bn');
   }
 }
 
 function SR(key,y,btn){
-  sa(btn);
+  if(btn) sa(btn);
   if(key==='tc')buildTC(y);
   else if(key==='res')buildRes(y);
   else if(key==='bm')buildBM(y);
   else if(key==='tas')buildTAS(y);
   else buildHIST(key,y);
+}
+
+function SRcustom(key, desdeId, hastaId){
+  const desde = document.getElementById(desdeId)?.value;
+  const hasta = document.getElementById(hastaId)?.value;
+  if(!desde && !hasta) return;
+  // Deselect preset buttons
+  const container = document.getElementById(desdeId)?.closest('.drng');
+  if(container) container.querySelectorAll('.r').forEach(b=>b.classList.remove('a'));
+  if(key==='tc') buildTC(0, desde||'2003-01-01', hasta||dateStr(0));
+  else if(key==='res') buildRes(0, desde||'2003-01-01', hasta||dateStr(0));
+  else if(key==='bm') buildBM(0, desde||'2003-01-01', hasta||dateStr(0));
+  else if(key==='tas') buildTAS(0, desde||'2003-01-01', hasta||dateStr(0));
+  else buildHIST(key, 0, desde||'2003-01-01', hasta||dateStr(0));
 }
 
 const built={};
