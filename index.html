@@ -503,7 +503,7 @@ function renderAPI(){
   if(ultTas) set('k_pf', fmtN(ultTas.pf,2)+'%');
 
   // KPIs resumen
-  renderResumenKPIs(res, tcRef, bm, baibar, badlar, tm20, tpm, uva, cer);
+  renderResumenKPIs();
 
   // Gráficos resumen
   buildResumenCharts();
@@ -516,7 +516,7 @@ function set(id, val, cls=''){
   el.className = 'kv' + (cls?' ks '+cls:'');
 }
 
-function renderResumenKPIs(res, tcRef, bm, baibar, badlar, tm20, tpm, uva, cer){
+function renderResumenKPIs(){
   // Usar latestMap para valores más actuales (ultValorInformado del BCRA)
   const L = apiData.latest || {};
   const tcRefV  = L[5]?.valor  ?? tcRef?.valor;
