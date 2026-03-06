@@ -427,77 +427,76 @@ function renderAPI(){
   const ultFecha = L[1]?.fecha || last(apiData.res)?.fecha;
   if(ultFecha) document.getElementById('hdate').textContent = '📅 Datos al ' + fmtDate(ultFecha);
 
-  // TC
-  const tcRef = last(apiData.tc_ref);
+  // TC — usar latestMap para valor más actual
+  const tcRef = {valor: L[5]?.valor ?? last(apiData.tc_ref)?.valor, fecha: L[5]?.fecha};
+  const tcMin = {valor: L[4]?.valor ?? last(apiData.tc_min)?.valor};
   const tcRef30 = valAt(apiData.tc_ref, 30);
   const tcRef1y = valAt(apiData.tc_ref, 365);
-  const tcMin = last(apiData.tc_min);
-  if(tcRef){
+  if(tcRef.valor){
     set('k_tc_ref', '$' + fmtN(tcRef.valor, 2));
     const vp = pct(tcRef.valor, tcRef30?.valor);
-    set('k_tc_ref_sub', (vp>=0?'▲':'▼')+' '+Math.abs(vp).toFixed(1)+'% vs 30d', vp>=0?'up':'dn');
+    set('k_tc_ref_sub', (vp>=0?'▲':'▼')+' '+Math.abs(vp||0).toFixed(1)+'% vs 30d', vp>=0?'up':'dn');
   }
-  if(tcMin) set('k_tc_min', '$' + fmtN(tcMin?.valor ?? L[4]?.valor, 2));
+  if(tcMin.valor) set('k_tc_min', '$' + fmtN(tcMin.valor, 2));
   if(tcRef30) set('k_tc_30d', '$' + fmtN(tcRef30.valor, 2));
   if(tcRef1y){
     set('k_tc_1y', '$' + fmtN(tcRef1y.valor, 2));
-    const ia = pct(tcRef?.valor, tcRef1y.valor);
+    const ia = pct(tcRef.valor, tcRef1y.valor);
     set('k_tc_ia_sub', 'Depreciación i.a.: +'+ia?.toFixed(1)+'%', 'dn');
   }
 
-  // Reservas
-  const res = last(apiData.res);
+  // Reservas — usar latestMap para valor más actual
+  const resLast = {valor: L[1]?.valor ?? last(apiData.res)?.valor};
   const res30 = valAt(apiData.res, 30);
   const res1y = valAt(apiData.res, 365);
-  const resPrev = apiData.res.length>1 ? apiData.res[apiData.res.length-2] : null;
-  if(res){
-    set('k_res', 'USD ' + fmtN(res.valor,0) + ' M');
-    const ia = pct(res.valor, res1y?.valor);
+  const resPrev = apiData.res?.length>1 ? apiData.res[apiData.res.length-2] : null;
+  if(resLast.valor){
+    set('k_res', 'USD ' + fmtN(resLast.valor,0) + ' M');
+    const ia = pct(resLast.valor, res1y?.valor);
     set('k_res_ia', '▲ +'+fmtN(ia,1)+'% i.a.', 'up');
   }
-  if(resPrev && res){
-    const vd = res.valor - resPrev.valor;
+  if(resPrev && resLast.valor){
+    const vd = resLast.valor - resPrev.valor;
     set('k_res_d', (vd>=0?'+':'') + fmtN(vd,0) + ' M', vd>=0?'up':'dn');
   }
   if(res30) set('k_res_30d', 'USD ' + fmtN(res30.valor,0) + ' M');
   if(res1y) set('k_res_1y', 'USD ' + fmtN(res1y.valor,0) + ' M');
 
-  // BM
-  const bm = last(apiData.bm);
+  // BM — usar latestMap para valor más actual
+  const bmVal = L[15]?.valor ?? last(apiData.bm)?.valor;
   const bm30 = valAt(apiData.bm, 30);
   const bm1y = valAt(apiData.bm, 365);
-  if(bm){
-    set('k_bm', '$' + fmtN(bm.valor/1e6, 1) + ' bn');
-    const vm = pct(bm.valor, bm30?.valor);
-    set('k_bm_sub', (vm>=0?'▲':'▼')+' '+Math.abs(vm).toFixed(1)+'% vs 30d', vm>=0?'up':'dn');
+  if(bmVal){
+    set('k_bm', '$' + fmtN(bmVal/1e6, 1) + ' bn');
+    const vm = pct(bmVal, bm30?.valor);
+    set('k_bm_sub', (vm>=0?'▲':'▼')+' '+Math.abs(vm||0).toFixed(1)+'% vs 30d', vm>=0?'up':'dn');
   }
   if(bm30) set('k_bm_30d', '$' + fmtN(bm30.valor/1e6,1) + ' bn');
   if(bm1y){
-    const ia = pct(bm?.valor, bm1y.valor);
+    const ia = pct(bmVal, bm1y.valor);
     set('k_bm_ia', (ia>=0?'+':'')+ia?.toFixed(1)+'% i.a.', ia>=0?'up':'dn');
     set('k_bm_1y', '$' + fmtN(bm1y.valor/1e6,1) + ' bn');
   }
 
-  // Tasas
-  const badlar = last(apiData.badlar);
-  const tamar = last(apiData.tamar);
-  const tm20 = last(apiData.tm20);
-  const baibar = last(apiData.baibar);
-  const tpm = last(apiData.tpm);
-  const uva = last(apiData.uva);
-  const cer = last(apiData.cer);
-  if(tpm) set('k_tpm', fmtN(tpm.valor,2)+'%');
-  if(baibar){
-    set('k_baibar', fmtN(baibar.valor,2)+'%');
+  // Tasas — usar latestMap para valores más actuales
+  const tpmV2    = L[40]?.valor ?? last(apiData.tpm)?.valor;
+  const baibarV2 = L[27]?.valor ?? last(apiData.baibar)?.valor;
+  const badlarV2 = L[7]?.valor  ?? last(apiData.badlar)?.valor;
+  const tamarV2  = L[9]?.valor  ?? last(apiData.tamar)?.valor;
+  const tm20V2   = L[8]?.valor  ?? last(apiData.tm20)?.valor;
+  const uvaV2    = L[29]?.valor ?? last(apiData.uva)?.valor;
+  const cerV2    = L[30]?.valor ?? last(apiData.cer)?.valor;
+  if(tpmV2) set('k_tpm', fmtN(tpmV2,2)+'%');
+  if(baibarV2){
+    set('k_baibar', fmtN(baibarV2,2)+'%');
     const b30 = valAt(apiData.baibar,30);
     if(b30) set('k_baibar_sub', 'Prom 30d: '+fmtN(b30.valor,1)+'%', 'dn');
   }
-  if(badlar) set('k_badlar', fmtN(badlar.valor,2)+'%');
-  const tamarVal = last(apiData.tamar)?.valor ?? L[9]?.valor;
-  if(tamarVal) set('k_tamar', fmtN(tamarVal,2)+'%');
-  if(tm20) set('k_tm20', fmtN(tm20.valor,2)+'%');
-  if(uva||L[29]) set('k_uva', '$'+fmtN(uva?.valor??L[29]?.valor,2));
-  if(cer||L[30]) set('k_cer', fmtN(cer?.valor??L[30]?.valor,4));
+  if(badlarV2) set('k_badlar', fmtN(badlarV2,2)+'%');
+  if(tamarV2) set('k_tamar', fmtN(tamarV2,2)+'%');
+  if(tm20V2) set('k_tm20', fmtN(tm20V2,2)+'%');
+  if(uvaV2) set('k_uva', '$'+fmtN(uvaV2,2));
+  if(cerV2) set('k_cer', fmtN(cerV2,4));
 
   // PF del HIST (no está en API v2)
   const ultTas = HIST.tasas.daily.slice(-1)[0];
@@ -518,32 +517,48 @@ function set(id, val, cls=''){
 }
 
 function renderResumenKPIs(res, tcRef, bm, baibar, badlar, tm20, tpm, uva, cer){
+  // Usar latestMap para valores más actuales (ultValorInformado del BCRA)
+  const L = apiData.latest || {};
+  const tcRefV  = L[5]?.valor  ?? tcRef?.valor;
+  const tcMinV  = L[4]?.valor  ?? last(apiData.tc_min)?.valor;
+  const resV    = L[1]?.valor  ?? res?.valor;
+  const bmV     = L[15]?.valor ?? bm?.valor;
+  const baibarV = L[27]?.valor ?? baibar?.valor;
+  const badlarV = L[7]?.valor  ?? badlar?.valor;
+  const tm20V   = L[8]?.valor  ?? tm20?.valor;
+  const tpmV    = L[40]?.valor ?? tpm?.valor;
+  const uvaV    = L[29]?.valor ?? uva?.valor;
+  const cerV    = L[30]?.valor ?? cer?.valor;
+  const tamarV  = L[9]?.valor;
+
+  // Calcular variaciones usando series históricas
   const tcRef30 = valAt(apiData.tc_ref,30);
-  const res1y = valAt(apiData.res,365);
-  const pctTC = pct(tcRef?.valor, tcRef30?.valor);
-  const pctRes = pct(res?.valor, res1y?.valor);
+  const res1y   = valAt(apiData.res,365);
+  const pctTC   = pct(tcRefV, tcRef30?.valor);
+  const pctRes  = pct(resV, res1y?.valor);
 
   document.getElementById('kpis-live').innerHTML = `
     <div class="k"><div class="kl">TC Referencia (A 3500)</div>
-      <div class="kv">$${fmtN(tcRef?.valor,2)}</div>
-      <div class="ks ${pctTC>=0?'up':'dn'}">${pctTC>=0?'▲':'▼'} ${Math.abs(pctTC).toFixed(1)}% vs 30d</div></div>
+      <div class="kv">$${fmtN(tcRefV,2)}</div>
+      <div class="ks ${pctTC>=0?'up':'dn'}">${pctTC>=0?'▲':'▼'} ${Math.abs(pctTC||0).toFixed(1)}% vs 30d</div></div>
     <div class="k"><div class="kl">TC Minorista (B 9791)</div>
-      <div class="kv">$${fmtN(last(apiData.tc_min)?.valor,2)}</div></div>
+      <div class="kv">$${fmtN(tcMinV,2)}</div></div>
     <div class="k p"><div class="kl">Reservas Int.</div>
-      <div class="kv">USD ${fmtN(res?.valor,0)} M</div>
+      <div class="kv">USD ${fmtN(resV,0)} M</div>
       <div class="ks up">▲ +${fmtN(pctRes,1)}% i.a.</div></div>
     <div class="k"><div class="kl">Base Monetaria</div>
-      <div class="kv">$${fmtN(bm?.valor/1e6,1)} bn</div></div>
+      <div class="kv">$${fmtN(bmV/1e6,1)} bn</div></div>
     <div class="k g"><div class="kl">BAIBAR</div>
-      <div class="kv">${fmtN(baibar?.valor,2)}%</div></div>
+      <div class="kv">${fmtN(baibarV,2)}%</div></div>
     <div class="k g"><div class="kl">BADLAR Priv.</div>
-      <div class="kv">${fmtN(badlar?.valor,2)}%</div>
-      <div class="ks">TM20: ${fmtN(tm20?.valor,2)}%</div></div>
+      <div class="kv">${fmtN(badlarV,2)}%</div>
+      <div class="ks">TM20: ${fmtN(tm20V,2)}%</div></div>
     <div class="k y"><div class="kl">TPM</div>
-      <div class="kv">${fmtN(tpm?.valor,1)}%</div></div>
+      <div class="kv">${fmtN(tpmV,1)}%</div></div>
     <div class="k y"><div class="kl">UVA</div>
-      <div class="kv">$${fmtN(uva?.valor,2)}</div>
-      <div class="ks">CER: ${fmtN(cer?.valor,2)}</div></div>
+      <div class="kv">$${fmtN(uvaV,2)}</div>
+      <div class="ks">CER: ${fmtN(cerV,2)}</div></div>
+    ${tamarV?`<div class="k g"><div class="kl">TAMAR Priv.</div><div class="kv">${fmtN(tamarV,2)}%</div></div>`:''}
   `;
 }
 
