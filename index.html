@@ -7,32 +7,32 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root{
-  --bg:#0f172a;--bg2:#1e293b;--bg3:#334155;
-  --accent:#3b82f6;--green:#10b981;--red:#ef4444;
-  --yellow:#f59e0b;--purple:#a78bfa;
-  --text:#f1f5f9;--muted:#94a3b8;--border:#334155;
+  --bg:#f0f4f8;--bg2:#ffffff;--bg3:#e8eef5;
+  --accent:#003366;--green:#007a4d;--red:#cc0033;
+  --yellow:#b8860b;--purple:#5c4d8a;
+  --text:#1a1a2e;--muted:#5a6a7e;--border:#c8d6e5;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);}
-header{background:linear-gradient(135deg,#1e3a8a,#1e293b);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;border-bottom:1px solid #1e40af;}
+header{background:linear-gradient(135deg,#003366,#004a8f);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;border-bottom:3px solid #cc0033;}
 .htitle{font-size:17px;font-weight:800;}
-.hsub{font-size:11px;color:#93c5fd;margin-top:2px;}
+.hsub{font-size:11px;color:#a8c4e0;margin-top:2px;}
 .hright{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
-.hdate{background:rgba(255,255,255,.1);border-radius:6px;padding:4px 11px;font-size:11px;color:#bfdbfe;}
-.hlive{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);border-radius:6px;padding:4px 11px;font-size:11px;color:#6ee7b7;display:flex;align-items:center;gap:5px;}
+.hdate{background:rgba(255,255,255,.15);border-radius:6px;padding:4px 11px;font-size:11px;color:#dceeff;}
+.hlive{background:rgba(0,200,120,.15);border:1px solid rgba(0,200,120,.35);border-radius:6px;padding:4px 11px;font-size:11px;color:#7fffd4;display:flex;align-items:center;gap:5px;}
 .dot{width:6px;height:6px;background:#10b981;border-radius:50%;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
-.tabs{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 16px;display:flex;gap:1px;overflow-x:auto;}
-.tab{padding:12px 16px;border:none;background:none;cursor:pointer;font-size:12px;font-weight:500;color:var(--muted);white-space:nowrap;border-bottom:2px solid transparent;transition:all .15s;}
-.tab:hover{color:var(--text);}
-.tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700;}
+.tabs{background:#ffffff;border-bottom:2px solid #c8d6e5;padding:0 16px;display:flex;gap:1px;overflow-x:auto;box-shadow:0 2px 4px rgba(0,51,102,.08);}
+.tab{padding:12px 16px;border:none;background:none;cursor:pointer;font-size:12px;font-weight:500;color:var(--muted);white-space:nowrap;border-bottom:3px solid transparent;transition:all .15s;}
+.tab:hover{color:var(--accent);}
+.tab.active{color:var(--accent);border-bottom-color:#cc0033;font-weight:700;}
 .page{display:none;padding:18px;max-width:1400px;margin:0 auto;}
 .page.active{display:block;}
 .sec{display:flex;align-items:center;gap:8px;margin:20px 0 11px;font-size:13px;font-weight:700;}
 .sec::before{content:'';width:3px;height:15px;background:var(--accent);border-radius:2px;}
 .badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;margin-left:6px;}
-.badge.live{background:rgba(16,185,129,.15);color:#6ee7b7;}
-.badge.manual{background:rgba(248,113,113,.15);color:#fca5a5;}
+.badge.live{background:rgba(0,122,77,.12);color:#007a4d;}
+.badge.manual{background:rgba(204,0,51,.1);color:#cc0033;}
 .kg{display:flex;flex-wrap:wrap;gap:9px;}
 .k{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:13px 15px;min-width:148px;border-left:3px solid var(--accent);flex:1;position:relative;}
 .k.g{border-left-color:var(--green);}
@@ -63,13 +63,13 @@ tr:hover td{background:var(--bg3);}
 .pos{color:var(--green);}
 .neg{color:var(--red);}
 .tw{background:var(--bg2);border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-top:14px;}
-.box{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:16px;line-height:1.78;font-size:13px;color:#cbd5e1;}
-.box strong{color:var(--text);}
+.box{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:16px;line-height:1.78;font-size:13px;color:#3a4a5e;}
+.box strong{color:var(--accent);}
 .tag{display:inline-block;padding:1px 7px;border-radius:4px;font-size:11px;font-weight:600;}
-.tag.g{background:rgba(16,185,129,.15);color:var(--green);}
-.tag.r{background:rgba(239,68,68,.15);color:var(--red);}
-.tag.b{background:rgba(59,130,246,.15);color:var(--accent);}
-.err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:12px 16px;font-size:12px;color:#fca5a5;margin-bottom:12px;}
+.tag.g{background:rgba(0,122,77,.12);color:var(--green);}
+.tag.r{background:rgba(204,0,51,.12);color:var(--red);}
+.tag.b{background:rgba(0,51,102,.12);color:var(--accent);}
+.err{background:rgba(204,0,51,.07);border:1px solid rgba(204,0,51,.25);border-radius:8px;padding:12px 16px;font-size:12px;color:#cc0033;margin-bottom:12px;}
 .drng{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
 .drng input[type=date]{background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;}
 .drng input[type=date]:focus{outline:none;border-color:var(--accent);}
@@ -610,8 +610,8 @@ function renderFallback(){
 // ══════════════════════════════════════════
 // CHARTS
 // ══════════════════════════════════════════
-Chart.defaults.color='#94a3b8';
-Chart.defaults.borderColor='#334155';
+Chart.defaults.color='#5a6a7e';
+Chart.defaults.borderColor='#c8d6e5';
 const CH={};
 
 // Plugin crosshair global
@@ -658,10 +658,10 @@ function lc(id,labels,ds,yf){
       tooltip:{
         mode:'index',
         intersect:false,
-        backgroundColor:'rgba(15,23,42,0.95)',
-        titleColor:'#94a3b8',
-        bodyColor:'#f1f5f9',
-        borderColor:'#334155',
+        backgroundColor:'rgba(255,255,255,0.97)',
+        titleColor:'#5a6a7e',
+        bodyColor:'#1a1a2e',
+        borderColor:'#c8d6e5',
         borderWidth:1,
         padding:10,
         titleFont:{size:11},
