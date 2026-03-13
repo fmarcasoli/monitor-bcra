@@ -695,7 +695,7 @@ function buildResumenCharts(){
   // TC reciente (API)
   const tc = apiData.tc_ref || [];
   const tc90 = tc.filter(d=>d.fecha>=dateStr(120));
-  lc('c_tc_r', tc90.map(d=>d.fecha.slice(5)), [ld('TC Ref.',tc90.map(d=>d.valor),'#3b82f6')], v=>'$'+v.toLocaleString('es-AR',{maximumFractionDigits:0}));
+  lc('c_tc_r', tc90.map(d=>d.fecha.slice(5)), [ld('TC Ref.',tc90.map(d=>d.valor),'#3b82f6')], v=>'$'+v.toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2}));
 
   // Reservas recientes (API)
   const res = apiData.res || [];
@@ -724,7 +724,7 @@ function buildTC(y, desde, hasta){
   const h = hasta || dateStr(0);
   const merged = mergeWithHist(apiData.tc_ref, HIST.res.monthly.filter(d=>d.f<'2024-01-01'), 'valor', 'tc');
   const data = merged.filter(d=>d.f>=c && d.f<=h);
-  lc('c_tc', data.map(x=>x.f.slice(0,7)), [ld('TC $/USD',data.map(x=>x.v),'#3b82f6',true)], v=>'$'+v.toLocaleString('es-AR',{maximumFractionDigits:0}));
+  lc('c_tc', data.map(x=>x.f.slice(0,7)), [ld('TC $/USD',data.map(x=>x.v),'#3b82f6',true)], v=>'$'+v.toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2}));
 }
 function buildRes(y, desde, hasta){
   const c = desde || cutoff(y);
@@ -784,7 +784,7 @@ function buildHIST(key,y,desde,hasta){
   } else if(key==='tc_h'){
     const merged=mergeWithHist(apiData.tc_ref, HIST.res.monthly,'valor','tc');
     const d=merged.filter(x=>x.f>=c&&x.f<=h);
-    lc('c_tc_h',d.map(x=>x.f.slice(0,7)),[ld('TC',d.map(x=>x.v),'#3b82f6',true)],v=>'$'+v.toLocaleString('es-AR',{maximumFractionDigits:0}));
+    lc('c_tc_h',d.map(x=>x.f.slice(0,7)),[ld('TC',d.map(x=>x.v),'#3b82f6',true)],v=>'$'+v.toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2}));
   } else if(key==='tpm_h'){
     const hist=HIST.tpm.filter(d=>d.f>=c);
     const api=(apiData.tpm||[]).filter(d=>d.fecha>=c);
